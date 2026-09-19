@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrupAI Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#0B0E10; --surface:#141A1D; --line:#262E32; --text:#EDEAE3; --dim:#96A0A3; --teal:#38E1C6; --gold:#D8B168; --danger:#E5695A; }
+  *{box-sizing:border-box;} body{margin:0; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif;}
+  header{display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid var(--line);}
+  .logo{font-family:'Fraunces',serif; font-weight:700; font-size:1.25rem;}
+  .logo span{color:var(--gold);}
+  button{font-family:'Inter',sans-serif; cursor:pointer; border:none; border-radius:8px;}
+  .btn-primary{background:var(--teal); color:#04211B; font-weight:600; padding:9px 14px; font-size:.82rem;}
+  .btn-danger{background:var(--danger); color:#2A0D08; font-weight:600; padding:9px 14px; font-size:.82rem;}
+  .btn-gold{background:var(--gold); color:#241a05; font-weight:600; padding:9px 14px; font-size:.82rem;}
+  .btn-ghost{background:transparent; color:var(--text); border:1px solid var(--line); padding:9px 14px; font-size:.82rem;}
+  main{max-width:800px; margin:0 auto; padding:22px;}
+  .section-title{font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--dim); text-transform:uppercase; letter-spacing:.08em; margin:22px 0 10px;}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:12px;}
+  .card img{width:100%; max-width:220px; aspect-ratio:1.6; object-fit:cover; border-radius:8px; margin-bottom:8px; background:#000;}
+  .tag{font-family:'JetBrains Mono',monospace; font-size:.63rem; color:var(--teal);}
+  .card h3{font-family:'Fraunces',serif; font-size:1rem; margin:6px 0 4px; display:flex; align-items:center; gap:6px;}
+  .card p{color:var(--dim); font-size:.82rem; margin:0 0 8px;}
+  .verified{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; border-radius:99px; background:#3B9DF2; color:#fff; font-size:.6rem;}
+  .status-badge{font-family:'JetBrains Mono',monospace; font-size:.65rem; padding:3px 8px; border-radius:99px; display:inline-block; margin-bottom:6px;}
+  .status-pending{background:#2A2515; color:var(--gold);}
+  .status-approved{background:#12251F; color:var(--teal);}
+  .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .center-box{max-width:420px; margin:80px auto; text-align:center; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:30px 22px;}
+  .spinner{font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--teal); text-align:center; padding:20px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Grup<span>AI</span> · Admin</div>
+  <div id="authArea"></div>
+</header>
+
+<main id="mainArea">
+  <div class="spinner">Memuat...</div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://cdn.jsdelivr.net/npm/firebase@10.12.0/app/+esm";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://cdn.jsdelivr.net/npm/firebase@10.12.0/auth/+esm";
+import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://cdn.jsdelivr.net/npm/firebase@10.12.0/firestore/+esm";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDabShBKh-VO0nFtyjeiQuMUZ7-YScrajc",
+  authDomain: "itemdrop-marketplace.firebaseapp.com",
+  projectId: "itemdrop-marketplace",
+  storageBucket: "itemdrop-marketplace.firebasestorage.app",
+  messagingSenderId: "1019572855068",
+  appId: "1:1019572855068:web:ef886624def992fbcd1ad9"
+};
+const ADMIN_UID = "GdZcEd4dZNPE1qpHnSxaofCYjYL2";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let unsub = null;
+
+const authArea = document.getElementById('authArea');
+const mainArea = document.getElementById('mainArea');
+
+onAuthStateChanged(auth, user => {
+  if(!user){
+    authArea.innerHTML = `<button class="btn-primary" onclick="window.doLogin()">Login dengan Google</button>`;
+    mainArea.innerHTML = `<div class="center-box"><p>Login pakai akun admin buat masuk panel ini.</p></div>`;
+    if(unsub){ unsub(); unsub=null; }
+    return;
+  }
+  authArea.innerHTML = `<span style="font-size:.8rem; color:var(--dim); margin-right:10px;">${user.displayName}</span><button class="btn-ghost" onclick="window.doLogout()">Keluar</button>`;
+  if(user.uid !== ADMIN_UID){
+    mainArea.innerHTML = `<div class="center-box"><h3 style="font-family:'Fraunces',serif;">Akses Ditolak</h3><p style="color:var(--dim); font-size:.85rem;">Akun ini bukan akun admin GrupAI.</p></div>`;
+    return;
+  }
+  listenGroups();
+});
+
+window.doLogin = () => signInWithPopup(auth, new GoogleAuthProvider()).catch(e=>alert('Login gagal: '+e.message));
+window.doLogout = () => signOut(auth);
+
+function listenGroups(){
+  if(unsub) unsub();
+  unsub = onSnapshot(collection(db,'groups'), snap => {
+    const groups = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    groups.sort((a,b)=> (a.reviewed?1:0) - (b.reviewed?1:0));
+    const pending = groups.filter(g=>!g.reviewed);
+    const approved = groups.filter(g=>g.reviewed);
+    mainArea.innerHTML = `
+      <div class="section-title">⏳ Menunggu Tinjauan (${pending.length})</div>
+      ${pending.map(cardHtml).join('') || '<p style="color:var(--dim);">Tidak ada yang menunggu.</p>'}
+      <div class="section-title">✓ Sudah Disetujui (${approved.length})</div>
+      ${approved.map(cardHtml).join('') || '<p style="color:var(--dim);">Belum ada yang disetujui.</p>'}
+    `;
+  }, err => { mainArea.innerHTML = `<p style="color:var(--dim);">Gagal memuat: ${err.message}</p>`; });
+}
+
+function cardHtml(g){
+  return `<div class="card">
+    ${g.imageUrl ? `<img src="${g.imageUrl}">` : ''}
+    <span class="status-badge ${g.reviewed?'status-approved':'status-pending'}">${g.reviewed?'Disetujui':'Menunggu'}</span>
+    <span class="tag">${g.platform||''} · ${g.category||''}</span>
+    <h3>${g.title||'(tanpa judul)'} ${g.verified?'<span class="verified">✓</span>':''}</h3>
+    <p>${g.desc||''}</p>
+    <a href="${g.link}" target="_blank" style="color:var(--teal); font-size:.78rem;">${g.link||''}</a>
+    <div class="actions">
+      ${!g.reviewed ? `<button class="btn-primary" onclick="window.approveGroup('${g.id}')">Approve</button>` : ''}
+      <button class="btn-gold" onclick="window.toggleVerified('${g.id}', ${!g.verified})">${g.verified?'Hapus Centang Biru':'Kasih Centang Biru'}</button>
+      <button class="btn-danger" onclick="window.rejectGroup('${g.id}')">Tolak & Hapus</button>
+    </div>
+  </div>`;
+}
+
+window.approveGroup = async (id) => { await updateDoc(doc(db,'groups',id), { reviewed:true }); };
+window.toggleVerified = async (id, val) => { await updateDoc(doc(db,'groups',id), { verified:val }); };
+window.rejectGroup = async (id) => { if(confirm('Yakin mau hapus grup ini permanen?')) await deleteDoc(doc(db,'groups',id)); };
+</script>
+</body>
+</html>
