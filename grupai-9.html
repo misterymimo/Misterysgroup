@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrupAI — Direktori Grup AI Terbaik</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#0D0C0A; --surface:#17140F; --line:#2B2620; --text:#F1ECE1; --dim:#9C9488; --brass:#C9A24B; --forest:#3FAE7A; --danger:#D9695A; }
+  *{box-sizing:border-box;} body{margin:0; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif;}
+  a{color:inherit; text-decoration:none;}
+  header{display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid var(--line); flex-wrap:wrap; gap:12px;}
+  .logo{font-family:'Fraunces',serif; font-weight:600; font-size:1.35rem; letter-spacing:.01em;}
+  .logo span{color:var(--brass);}
+  button{font-family:'Inter',sans-serif; cursor:pointer; border:none; border-radius:9px;}
+  .btn-primary{background:var(--forest); color:#04170D; font-weight:600; padding:10px 16px;}
+  .btn-ghost{background:transparent; color:var(--text); border:1px solid var(--line); padding:10px 16px;}
+  .btn-gold{background:var(--brass); color:#241a05; font-weight:600; padding:8px 12px; font-size:.78rem;}
+  .btn-danger-ghost{background:transparent; color:var(--danger); border:1px solid #4a2e2a; padding:9px 14px; font-size:.82rem;}
+  .user-chip{display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:99px; padding:6px 12px 6px 6px;}
+  .avatar{width:26px; height:26px; border-radius:99px; background:var(--brass); color:#241a05; font-weight:700; font-size:.75rem; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif;}
+  .user-chip span{font-size:.8rem; color:var(--dim); max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .authArea{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  main{max-width:960px; margin:0 auto; padding:22px;}
+  .nav-tabs{display:flex; gap:6px; margin-bottom:6px;}
+  .nav-tab{display:flex; align-items:center; gap:6px; font-family:'Inter',sans-serif; font-size:.82rem; color:var(--dim); background:transparent; border:1px solid var(--line); padding:7px 14px; border-radius:99px;}
+  .nav-tab.active{background:var(--surface); color:var(--text); border-color:var(--brass);}
+  .section-title{font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--dim); text-transform:uppercase; letter-spacing:.08em; margin:24px 0 10px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px;}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px;}
+  .card img{width:100%; aspect-ratio:1.6; object-fit:cover; border-radius:8px; margin-bottom:8px; background:#000;}
+  .tag-row{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px;}
+  .tag{font-family:'JetBrains Mono',monospace; font-size:.63rem; color:var(--forest); background:rgba(63,174,122,.1); padding:2px 7px; border-radius:5px;}
+  .tag.theme{color:var(--brass); background:rgba(201,162,75,.12);}
+  .card h3{font-family:'Fraunces',serif; font-weight:600; font-size:.98rem; margin:0 0 5px; display:flex; align-items:center; gap:5px;}
+  .card p{color:var(--dim); font-size:.78rem; margin:0 0 8px;}
+  .badge-verified{display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:99px; background:#3B7DD8; flex-shrink:0;}
+  .badge-crown{color:var(--brass); display:inline-flex;}
+  .status-badge{display:inline-flex; align-items:center; gap:4px; font-family:'JetBrains Mono',monospace; font-size:.65rem; padding:3px 8px; border-radius:99px; margin-bottom:8px;}
+  .status-pending{background:#2A2515; color:var(--brass);}
+  .status-approved{background:#12251C; color:var(--forest);}
+  .join-btn{display:flex; align-items:center; justify-content:center; gap:6px; width:100%; text-align:center; background:var(--forest); color:#04170D; font-weight:600; padding:9px; text-decoration:none; font-size:.82rem; border-radius:7px;}
+  .stars{display:inline-flex; gap:2px;}
+  .stars .star{color:var(--line); font-size:1rem; cursor:pointer;}
+  .stars .star.on{color:var(--brass);}
+  .overlay{position:fixed; inset:0; background:rgba(4,4,3,.82); display:none; align-items:center; justify-content:center; padding:16px; z-index:10;}
+  .overlay.show{display:flex;}
+  .modal{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px; width:100%; max-width:380px; max-height:88vh; overflow-y:auto;}
+  .modal h2{font-family:'Fraunces',serif; font-weight:600; font-size:1.15rem; margin:0 0 4px;}
+  .modal label{display:block; font-size:.78rem; color:var(--dim); margin:10px 0 5px;}
+  .modal input, .modal select, .modal textarea{width:100%; padding:9px; border-radius:7px; border:1px solid var(--line); background:var(--bg); color:var(--text); font-family:'Inter',sans-serif;}
+  .checkbox{display:flex; gap:8px; align-items:flex-start; margin-top:12px; font-size:.75rem; color:var(--dim);}
+  .modal-actions{display:flex; gap:10px; margin-top:16px;}
+  .notice{font-family:'JetBrains Mono',monospace; font-size:.65rem; color:var(--dim); background:var(--bg); border:1px dashed var(--line); border-radius:7px; padding:9px; margin-top:12px;}
+  .spinner{font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--forest); text-align:center; padding:8px;}
+  .rank-row{display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:10px;}
+  svg.i{display:inline-block; vertical-align:-2px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Grup<span>AI</span></div>
+  <div id="authArea" class="authArea"></div>
+</header>
+
+<main>
+  <div class="nav-tabs" id="navTabs"></div>
+
+  <div id="allView">
+    <input id="searchInput" type="text" placeholder="Cari nama grup, tema, kategori, atau platform..." oninput="renderGrid()"
+      style="width:100%; padding:10px 14px; border-radius:99px; border:1px solid var(--line); background:var(--surface); color:var(--text); font-family:'Inter',sans-serif; font-size:.85rem; margin-bottom:16px;">
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div id="rankView" style="display:none;">
+    <div class="section-title">Peringkat Grup Terbaik</div>
+    <p style="color:var(--dim); font-size:.8rem; margin-top:-4px;">Makin tinggi rating, makin di atas — makin banyak yang lihat & join grup kamu.</p>
+    <div id="rankList"></div>
+  </div>
+
+  <div id="mineView" style="display:none;">
+    <div class="section-title">Grup yang Kamu Upload</div>
+    <div class="grid" id="mineGrid"></div>
+  </div>
+
+  <div id="spinView" style="display:none;">
+    <div class="section-title">Roda Hadiah</div>
+    <div id="spinArea"></div>
+  </div>
+</main>
+
+<div class="overlay" id="uploadOverlay">
+  <div class="modal">
+    <h2 id="uploadTitle">Tambah Grup</h2>
+    <label>Nama Grup</label><input id="fTitle" placeholder="Contoh: Belajar Prompting AI">
+    <label>Tema (wajib, buat memudahkan pencarian)</label><input id="fTema" placeholder="Contoh: AI, Coding, Produktivitas">
+    <label>Platform</label>
+    <select id="fPlatform"><option>WhatsApp</option><option>Telegram</option></select>
+    <label>Kategori</label>
+    <select id="fCat"><option>Diskusi AI</option><option>Belajar & Tutorial</option><option>Tools & Produktivitas</option><option>Lainnya</option></select>
+    <label>Deskripsi Singkat</label><textarea id="fDesc" rows="2"></textarea>
+    <label>Link Undangan Grup</label><input id="fLink" placeholder="https://chat.whatsapp.com/...">
+    <label>Gambar Grup (opsional)</label><input id="fImg" type="file" accept="image/*">
+    <div id="premiumFields" style="display:none;">
+      <label>Warna Nama Grup (khusus premium)</label><input id="fColor" type="color" value="#C9A24B" style="height:40px; padding:2px;">
+      <label>Nomor WA Kontak Admin Grup (khusus premium, tampil di halaman publik)</label><input id="fContact" placeholder="628123456789">
+    </div>
+    <div class="checkbox" id="confirmRow">
+      <input type="checkbox" id="fConfirm" style="width:auto;">
+      <label style="margin:0;" for="fConfirm">Saya konfirmasi grup ini bukan konten 18+/dewasa, judi, atau ilegal. Grup akan ditinjau admin sebelum tampil publik.</label>
+    </div>
+    <div id="uploadStatus" class="spinner" style="display:none;"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeUpload()" style="flex:1">Batal</button>
+      <button class="btn-primary" id="submitBtn" onclick="submitUpload()" style="flex:1">Kirim</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="blockOverlay">
+  <div class="modal">
+    <h2>Kuota gratis habis</h2>
+    <p style="color:var(--dim); font-size:.85rem;">Tonton iklan <b>25x</b> dalam 24 jam buat dapat 1 slot upload tambahan.</p>
+    <div style="background:var(--bg); border:1px solid var(--line); border-radius:8px; height:10px; margin:12px 0; overflow:hidden;">
+      <div id="adProgressBar" style="background:var(--forest); height:100%; width:0%; transition:width .3s;"></div>
+    </div>
+    <p style="font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--forest); text-align:center;" id="adProgressText">0 / 25 iklan ditonton</p>
+    <div class="modal-actions"><button class="btn-primary" id="watchAdBtn" onclick="watchAd()" style="flex:1">Tonton Iklan</button></div>
+    <button class="btn-ghost" onclick="closeBlock()" style="width:100%; margin-top:8px;">Tutup</button>
+    <div class="notice">Demo: iklan disimulasikan (delay 2 detik). Di versi live, sambungkan ke rewarded-ad network asli.</div>
+  </div>
+</div>
+
+<div class="overlay" id="premiumBlockOverlay">
+  <div class="modal">
+    <h2>Kuota Premium Habis</h2>
+    <p style="color:var(--dim); font-size:.85rem;">Kamu sudah pakai 3 upload gratis dalam 24 jam terakhir. Kuota reset otomatis setelah 24 jam dari upload pertamamu.</p>
+    <button class="btn-ghost" onclick="document.getElementById('premiumBlockOverlay').classList.remove('show')" style="width:100%;">Oke</button>
+  </div>
+</div>
+
+<div class="overlay" id="transferOverlay">
+  <div class="modal">
+    <h2>Transfer Premium</h2>
+    <p style="color:var(--dim); font-size:.82rem;">Kasih status premium kamu ke orang lain. Permintaan ini perlu di-approve admin dulu sebelum aktif.</p>
+    <label>Gmail Tujuan (yang dipakai login di web ini)</label>
+    <input id="transferEmail" type="email" placeholder="contoh@gmail.com">
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="document.getElementById('transferOverlay').classList.remove('show')" style="flex:1">Batal</button>
+      <button class="btn-primary" onclick="window.submitTransfer()" style="flex:1">Kirim Permintaan</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="logoutOverlay">
+  <div class="modal">
+    <h2>Keluar dari GrupAI?</h2>
+    <p style="color:var(--dim); font-size:.85rem;">Ini cuma keluar dari sesi GrupAI, bukan logout akun Google kamu secara keseluruhan (itu diatur Google sendiri demi keamanan).</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeLogoutConfirm()" style="flex:1">Batal</button>
+      <button class="btn-danger-ghost" onclick="confirmLogout()" style="flex:1">Ya, Keluar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://cdn.jsdelivr.net/npm/firebase@10.12.0/app/+esm";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://cdn.jsdelivr.net/npm/firebase@10.12.0/auth/+esm";
+import { getFirestore, collection, addDoc, query, where, onSnapshot, doc, getDoc, getDocs, setDoc, updateDoc } from "https://cdn.jsdelivr.net/npm/firebase@10.12.0/firestore/+esm";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDabShBKh-VO0nFtyjeiQuMUZ7-YScrajc",
+  authDomain: "itemdrop-marketplace.firebaseapp.com",
+  projectId: "itemdrop-marketplace",
+  storageBucket: "itemdrop-marketplace.firebasestorage.app",
+  messagingSenderId: "1019572855068",
+  appId: "1:1019572855068:web:ef886624def992fbcd1ad9"
+};
+const BANNED = ['18+','dewasa','porn','bokep','judi','slot gacor','narkoba'];
+
+// --- Ikon SVG (menggantikan emoji) ---
+const ic = {
+  crown: `<svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 17l2-9 5 5 2-7 2 7 5-5 2 9H3z"/><path d="M3 20h18"/></svg>`,
+  check: `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  trophy: `<svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4z"/><path d="M7 5H4a3 3 0 0 0 3 3M17 5h3a3 3 0 0 1-3 3"/></svg>`,
+  join: `<svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>`,
+  clock: `<svg class="i" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`,
+  folder: `<svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>`,
+  gem: `<svg class="i" width="14" height="14" viewBox="0 0 24 20"><polygon points="4,0 20,0 24,7 12,20 0,7" fill="#5FC9E8"/><polygon points="4,0 20,0 22,4 2,4" fill="#D6F3FF"/><polygon points="2,4 8,4 12,20 0,7" fill="#2C86C9"/><polygon points="16,4 22,4 24,7 12,20" fill="#1B5E93"/><polygon points="8,4 16,4 12,20" fill="#8FD6FF"/></svg>`
+};
+function verifiedBadge(g){ return g.verified ? `<span class="badge-verified">${ic.check}</span>` : ''; }
+function crownBadge(email){ return premiumEmails.has(email) ? `<span class="badge-crown">${ic.crown}</span>` : ''; }
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let currentUser = null;
+let mineUnsub = null;
+let premiumEmails = new Set();
+
+onSnapshot(collection(db,'premiumUsers'), snap => {
+  premiumEmails = new Set(snap.docs.map(d=>d.id));
+  renderAuth(); renderGrid(); renderRank();
+});
+
+const authArea = document.getElementById('authArea');
+function initials(name){ return (name||'?').trim().charAt(0).toUpperCase(); }
+
+function renderNavTabs(){
+  let html = `<button class="nav-tab active" id="tabAll" onclick="switchView('all')">Semua Grup</button>
+    <button class="nav-tab" id="tabRank" onclick="switchView('rank')">${ic.trophy} Peringkat</button>
+    <button class="nav-tab" id="tabSpin" onclick="switchView('spin')">${ic.gem} Roda Hadiah</button>`;
+  if(currentUser) html += `<button class="nav-tab" id="tabMine" onclick="switchView('mine')">${ic.folder} Grup Saya</button>`;
+  document.getElementById('navTabs').innerHTML = html;
+}
+
+function renderAuth(){
+  renderNavTabs();
+  if(currentUser){
+    const isPremium = premiumEmails.has(currentUser.email);
+    authArea.innerHTML = `
+      <div class="user-chip"><div class="avatar">${initials(currentUser.displayName)}</div><span>${currentUser.displayName}</span>${isPremium?`<span class="badge-verified" style="background:var(--brass);">${ic.check}</span>`:''}</div>
+      <button class="btn-primary" onclick="window.openUpload()">+ Tambah Grup</button>
+      ${isPremium ? `<button class="btn-gold" onclick="window.openTransfer()">Transfer Premium</button>` : ''}
+      <button class="btn-ghost" onclick="window.askLogout()">Keluar</button>`;
+    listenMine();
+  } else {
+    authArea.innerHTML = `<button class="btn-primary" onclick="window.doLogin()">Login dengan Google</button>`;
+    document.getElementById('mineView').style.display = 'none';
+    document.getElementById('allView').style.display = 'block';
+    if(mineUnsub){ mineUnsub(); mineUnsub = null; }
+  }
+}
+onAuthStateChanged(auth, user => { currentUser = user; renderAuth(); renderGrid(); renderRank(); });
+
+window.doLogin = () => signInWithPopup(auth, new GoogleAuthProvider()).catch(e=>alert('Login gagal: '+e.message));
+window.askLogout = () => document.getElementById('logoutOverlay').classList.add('show');
+window.closeLogoutConfirm = () => document.getElementById('logoutOverlay').classList.remove('show');
+window.confirmLogout = () => { signOut(auth); document.getElementById('logoutOverlay').classList.remove('show'); };
+
+window.openTransfer = () => {
+  document.getElementById('transferEmail').value = '';
+  document.getElementById('transferOverlay').classList.add('show');
+};
+window.submitTransfer = async () => {
+  const toEmail = document.getElementById('transferEmail').value.trim().toLowerCase();
+  if(!toEmail || !toEmail.includes('@')){ alert('Masukkan email yang valid.'); return; }
+  if(toEmail === currentUser.email){ alert('Nggak bisa transfer ke email sendiri.'); return; }
+  await addDoc(collection(db,'premiumTransfers'), {
+    fromEmail: currentUser.email, toEmail, requestedAt: Date.now(), status:'pending'
+  });
+  alert('Permintaan transfer terkirim, tunggu admin approve.');
+  document.getElementById('transferOverlay').classList.remove('show');
+};
+
+window.switchView = (view) => {
+  document.getElementById('allView').style.display = view==='all' ? 'block' : 'none';
+  document.getElementById('rankView').style.display = view==='rank' ? 'block' : 'none';
+  document.getElementById('mineView').style.display = view==='mine' ? 'block' : 'none';
+  document.getElementById('spinView').style.display = view==='spin' ? 'block' : 'none';
+  const tabAll = document.getElementById('tabAll'), tabRank = document.getElementById('tabRank'), tabMine = document.getElementById('tabMine'), tabSpin = document.getElementById('tabSpin');
+  if(tabAll) tabAll.classList.toggle('active', view==='all');
+  if(tabRank) tabRank.classList.toggle('active', view==='rank');
+  if(tabMine) tabMine.classList.toggle('active', view==='mine');
+  if(tabSpin) tabSpin.classList.toggle('active', view==='spin');
+  if(view==='spin') renderSpin();
+};
+
+function titleStyle(g){ return premiumEmails.has(g.ownerEmail) && g.nameColor ? `style="color:${g.nameColor}"` : ''; }
+
+function starsHtml(gid, avg, canVote){
+  let s = '<div class="stars" data-gid="'+gid+'">';
+  for(let n=1;n<=5;n++){
+    s += `<span class="star ${n<=Math.round(avg)?'on':''}" ${canVote?`onclick="window.rateGroup('${gid}',${n})"`:''}>★</span>`;
+  }
+  s += '</div>';
+  return s;
+}
+
+let allGroupsCache = [];
+
+async function loadGroups(){
+  const gq = query(collection(db,'groups'), where('reviewed','==',true));
+  const snap = await getDocs(gq);
+  const groups = await Promise.all(snap.docs.map(async d => {
+    const g = { id:d.id, ...d.data() };
+    const rSnap = await getDocs(collection(db,'groups',d.id,'ratings'));
+    const values = rSnap.docs.map(r=>r.data().value);
+    g.avgRating = values.length ? values.reduce((a,b)=>a+b,0)/values.length : 0;
+    g.voteCount = values.length;
+    return g;
+  }));
+  allGroupsCache = groups;
+  renderGrid();
+  renderRank();
+}
+
+window.renderGrid = function(){
+  const term = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+  const groups = allGroupsCache.filter(g =>
+    !term || (g.title||'').toLowerCase().includes(term) || (g.tema||'').toLowerCase().includes(term) || (g.category||'').toLowerCase().includes(term) || (g.platform||'').toLowerCase().includes(term)
+  );
+  document.getElementById('grid').innerHTML = groups.map(g=>`
+    <div class="card">
+      <a href="group.html?id=${g.id}">
+        ${g.imageUrl ? `<img src="${g.imageUrl}">` : ''}
+        <div class="tag-row"><span class="tag">${g.platform} · ${g.category}</span><span class="tag theme">${g.tema||''}</span></div>
+        <h3 ${titleStyle(g)}>${g.title} ${verifiedBadge(g)} ${crownBadge(g.ownerEmail)}</h3>
+      </a>
+      <p>${g.desc||''}</p>
+      ${starsHtml(g.id, g.avgRating, !!currentUser)} <span style="color:var(--dim); font-size:.72rem;">(${g.voteCount} vote)</span>
+      <a class="join-btn" target="_blank" href="${g.link}" style="margin-top:8px;">${ic.join} Gabung Grup</a>
+    </div>`).join('') || '<p style="color:var(--dim);">Tidak ada grup yang cocok.</p>';
+};
+
+function renderRank(){
+  const sorted = [...allGroupsCache].sort((a,b)=>b.avgRating-a.avgRating);
+  document.getElementById('rankList').innerHTML = sorted.map((g,i)=>`
+    <div class="rank-row" style="${i<3?'border-color:var(--brass);':''}">
+      <div style="font-family:'Fraunces',serif; font-weight:700; font-size:1.3rem; color:${i<3?'var(--brass)':'var(--dim)'}; min-width:28px;">#${i+1}</div>
+      <div style="flex:1; min-width:0;">
+        <a href="group.html?id=${g.id}"><h3 ${titleStyle(g)} style="margin:0 0 4px;">${g.title} ${verifiedBadge(g)} ${crownBadge(g.ownerEmail)}</h3></a>
+        <span class="tag">${g.platform} · ${g.category}</span> <span class="tag theme">${g.tema||''}</span>
+      </div>
+      <div style="text-align:right; font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--brass); margin-right:6px;">★ ${g.avgRating.toFixed(1)}<br><span style="color:var(--dim); font-size:.65rem;">${g.voteCount} vote</span></div>
+      <a class="join-btn" style="width:auto; padding:8px 14px; white-space:nowrap;" target="_blank" href="${g.link}">Gabung</a>
+    </div>`).join('') || '<p style="color:var(--dim);">Belum ada grup disetujui.</p>';
+}
+
+window.rateGroup = async (gid, value) => {
+  if(!currentUser){ alert('Login dulu buat ngasih rating.'); return; }
+  await setDoc(doc(db,'groups',gid,'ratings',currentUser.uid), { value });
+  loadGroups();
+};
+
+loadGroups();
+onSnapshot(query(collection(db,'groups'), where('reviewed','==',true)), () => loadGroups());
+
+function listenMine(){
+  if(mineUnsub) mineUnsub();
+  const mq = query(collection(db,'groups'), where('ownerId','==',currentUser.uid));
+  mineUnsub = onSnapshot(mq, snap => {
+    const groups = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    const isPremium = premiumEmails.has(currentUser.email);
+    document.getElementById('mineGrid').innerHTML = groups.map(g=>`
+      <div class="card">
+        ${g.imageUrl ? `<img src="${g.imageUrl}">` : ''}
+        <span class="status-badge ${g.reviewed?'status-approved':'status-pending'}">${g.reviewed?ic.check+' Disetujui':ic.clock+' Menunggu Tinjauan'}</span>
+        <div class="tag-row"><span class="tag">${g.platform} · ${g.category}</span><span class="tag theme">${g.tema||''}</span></div>
+        <h3 ${titleStyle(g)}>${g.title} ${verifiedBadge(g)} ${crownBadge(g.ownerEmail)}</h3><p>${g.desc||''}</p>
+        ${isPremium ? `<button class="btn-gold" onclick="window.openEdit('${g.id}')">Edit Grup</button>` : ''}
+      </div>`).join('') || '<p style="color:var(--dim);">Kamu belum upload grup apapun.</p>';
+  }, err => { document.getElementById('mineGrid').innerHTML = '<p style="color:var(--dim);">Gagal memuat: '+err.message+'</p>'; });
+}
+
+let editingId = null;
+window.openUpload = () => {
+  if(!currentUser){ alert('Login dulu pakai Google.'); return; }
+  editingId = null;
+  document.getElementById('uploadTitle').textContent = 'Tambah Grup';
+  document.getElementById('premiumFields').style.display = 'none';
+  document.getElementById('confirmRow').style.display = 'flex';
+  document.getElementById('fTitle').value=''; document.getElementById('fTema').value=''; document.getElementById('fDesc').value=''; document.getElementById('fLink').value='';
+  document.getElementById('fConfirm').checked = false;
+  document.getElementById('uploadOverlay').classList.add('show');
+};
+window.closeUpload = () => document.getElementById('uploadOverlay').classList.remove('show');
+
+window.openEdit = async (gid) => {
+  editingId = gid;
+  const snap = await getDoc(doc(db,'groups',gid));
+  const g = snap.data();
+  document.getElementById('uploadTitle').textContent = 'Edit Grup (Premium)';
+  document.getElementById('premiumFields').style.display = 'block';
+  document.getElementById('confirmRow').style.display = 'none';
+  document.getElementById('fTitle').value = g.title||'';
+  document.getElementById('fTema').value = g.tema||'';
+  document.getElementById('fPlatform').value = g.platform||'WhatsApp';
+  document.getElementById('fCat').value = g.category||'Diskusi AI';
+  document.getElementById('fDesc').value = g.desc||'';
+  document.getElementById('fLink').value = g.link||'';
+  document.getElementById('fColor').value = g.nameColor||'#C9A24B';
+  document.getElementById('fContact').value = g.adminContact||'';
+  document.getElementById('uploadOverlay').classList.add('show');
+};
+
+function resizeImage(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 480;
+        const scale = Math.min(1, maxW/img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width*scale);
+        canvas.height = Math.round(img.height*scale);
+        canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = () => reject(new Error('Gambar rusak/tidak valid'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('Gagal membaca file'));
+    reader.readAsDataURL(file);
+  });
+}
+async function uploadImageIfAny(){
+  const file = document.getElementById('fImg').files[0];
+  if(!file) return null;
+  return await resizeImage(file);
+}
+
+const AD_GOAL = 25;
+const WINDOW_MS = 24*60*60*1000;
+let pendingForm = null;
+
+function getFreshAdState(data){
+  const now = Date.now();
+  let adProgress = data?.adProgress || 0;
+  let adWindowStart = data?.adWindowStart || null;
+  if(adWindowStart && (now - adWindowStart) > WINDOW_MS){ adProgress = 0; adWindowStart = null; }
+  return { adProgress, adWindowStart };
+}
+function getFreshPremiumState(data){
+  const now = Date.now();
+  let premiumUsed = data?.premiumUsed || 0;
+  let premiumWindowStart = data?.premiumWindowStart || null;
+  if(premiumWindowStart && (now - premiumWindowStart) > WINDOW_MS){ premiumUsed = 0; premiumWindowStart = null; }
+  return { premiumUsed, premiumWindowStart };
+}
+
+window.submitUpload = async () => {
+  const title = document.getElementById('fTitle').value.trim();
+  const tema = document.getElementById('fTema').value.trim();
+  const platform = document.getElementById('fPlatform').value;
+  const category = document.getElementById('fCat').value;
+  const desc = document.getElementById('fDesc').value.trim();
+  const link = document.getElementById('fLink').value.trim();
+  if(!title || !link || !tema){ alert('Lengkapi nama grup, tema, dan link undangan.'); return; }
+  const combined = (title+' '+desc).toLowerCase();
+  if(BANNED.some(w=>combined.includes(w))){ alert('Grup ditolak: terdeteksi kata yang dilarang.'); return; }
+
+  if(editingId){
+    const nameColor = document.getElementById('fColor').value;
+    const adminContact = document.getElementById('fContact').value.trim();
+    document.getElementById('submitBtn').disabled = true;
+    try{
+      const newImg = await uploadImageIfAny();
+      const payload = { title, tema, platform, category, desc, link, nameColor, adminContact };
+      if(newImg) payload.imageUrl = newImg;
+      await updateDoc(doc(db,'groups',editingId), payload);
+      alert('Grup berhasil diupdate!');
+      closeUpload();
+    }catch(e){ alert('Gagal update: '+e.message); }
+    document.getElementById('submitBtn').disabled = false;
+    return;
+  }
+
+  const confirmed = document.getElementById('fConfirm').checked;
+  if(!confirmed){ alert('Centang dulu konfirmasi kontennya.'); return; }
+
+  const userRef = doc(db,'users',currentUser.uid);
+  const userSnap = await getDoc(userRef);
+  const data = userSnap.exists() ? userSnap.data() : {};
+  const isPremiumUser = premiumEmails.has(currentUser.email);
+
+  if(isPremiumUser){
+    const { premiumUsed, premiumWindowStart } = getFreshPremiumState(data);
+    if(premiumUsed < 3){
+      await doUpload(title, tema, platform, category, desc, link, userRef, 0, {premium:true, premiumUsed, premiumWindowStart});
+    } else {
+      document.getElementById('premiumBlockOverlay').classList.add('show');
+    }
+    return;
+  }
+
+  const freeUsed = data.freeUploadsUsed || 0;
+  if(freeUsed < 1){
+    await doUpload(title, tema, platform, category, desc, link, userRef, freeUsed, {premium:false});
+    return;
+  }
+  const { adProgress, adWindowStart } = getFreshAdState(data);
+  if(adProgress >= AD_GOAL){
+    await doUpload(title, tema, platform, category, desc, link, userRef, freeUsed, {premium:false, fromAds:true});
+    return;
+  }
+  pendingForm = { title, tema, platform, category, desc, link, userRef, freeUsed };
+  updateAdUI(adProgress);
+  await setDoc(userRef, { adProgress, adWindowStart }, { merge:true });
+  document.getElementById('blockOverlay').classList.add('show');
+};
+
+function updateAdUI(progress){
+  document.getElementById('adProgressBar').style.width = (progress/AD_GOAL*100)+'%';
+  document.getElementById('adProgressText').textContent = progress+' / '+AD_GOAL+' iklan ditonton';
+}
+window.closeBlock = () => document.getElementById('blockOverlay').classList.remove('show');
+
+window.watchAd = async () => {
+  const btn = document.getElementById('watchAdBtn');
+  btn.disabled = true; btn.textContent = 'Memutar iklan...';
+  const userRef = pendingForm.userRef;
+  const userSnap = await getDoc(userRef);
+  const data = userSnap.exists() ? userSnap.data() : {};
+  let { adProgress, adWindowStart } = getFreshAdState(data);
+  setTimeout(async () => {
+    adProgress += 1;
+    if(!adWindowStart) adWindowStart = Date.now();
+    await setDoc(userRef, { adProgress, adWindowStart }, { merge:true });
+    updateAdUI(adProgress);
+    btn.disabled = false; btn.textContent = 'Tonton Iklan';
+    if(adProgress >= AD_GOAL){
+      document.getElementById('blockOverlay').classList.remove('show');
+      const f = pendingForm;
+      await doUpload(f.title, f.tema, f.platform, f.category, f.desc, f.link, f.userRef, f.freeUsed, {premium:false, fromAds:true});
+    }
+  }, 2000);
+};
+
+async function doUpload(title, tema, platform, category, desc, link, userRef, freeUsed, opts){
+  const statusEl = document.getElementById('uploadStatus');
+  statusEl.style.display='block'; statusEl.textContent='Memproses gambar...';
+  document.getElementById('submitBtn').disabled = true;
+  try{
+    const imageUrl = await uploadImageIfAny();
+    statusEl.textContent = 'Menyimpan grup...';
+    await addDoc(collection(db,'groups'), {
+      title, tema, platform, category, desc, link, imageUrl: imageUrl||'',
+      ownerId: currentUser.uid, ownerEmail: currentUser.email,
+      reviewed:false, verified:false, nameColor:'', adminContact:'', rating:0, votes:0, createdAt: Date.now()
+    });
+    if(opts.premium){
+      await setDoc(userRef, { premiumUsed: opts.premiumUsed+1, premiumWindowStart: opts.premiumWindowStart || Date.now() }, { merge:true });
+    } else if(opts.fromAds){
+      await setDoc(userRef, { adProgress:0, adWindowStart:null }, { merge:true });
+    } else {
+      await setDoc(userRef, { freeUploadsUsed: freeUsed+1 }, { merge:true });
+    }
+    alert('Grup berhasil dikirim! Menunggu review admin sebelum tampil publik.');
+    closeUpload();
+  }catch(e){ alert('Gagal: '+e.message); }
+  statusEl.style.display='none';
+  document.getElementById('submitBtn').disabled = false;
+}
+
+// ===== Roda Hadiah =====
+const PRIZES = [
+  {label:'5', amount:5, weight:200},
+  {label:'10', amount:10, weight:150},
+  {label:'Zonk', amount:0, weight:180},
+  {label:'25', amount:25, weight:110},
+  {label:'50', amount:50, weight:80},
+  {label:'100', amount:100, weight:40},
+  {label:'200', amount:200, weight:25},
+  {label:'PREMIUM', amount:0, premium:true, weight:5},
+];
+const SEG = 360/PRIZES.length;
+const SPIN_COST = 40;
+let spinRotation = 0;
+let spinning = false;
+
+function polar(cx,cy,r,angleDeg){
+  const rad = angleDeg * Math.PI/180;
+  return { x: cx + r*Math.sin(rad), y: cy - r*Math.cos(rad) };
+}
+function buildWheelSvg(){
+  const CX=150, CY=150, R=138, LABEL_R=90;
+  const colors=['#1B1712','#211C15'];
+  let svg = `<g id="spinGroup" style="transform:rotate(${spinRotation}deg); transform-origin:150px 150px; transition:transform 4.2s cubic-bezier(.18,.86,.15,1);">`;
+  PRIZES.forEach((p,i)=>{
+    const a0=i*SEG, a1=(i+1)*SEG;
+    const p0=polar(CX,CY,R,a0), p1=polar(CX,CY,R,a1);
+    const fill = p.premium ? 'var(--brass)' : colors[i%2];
+    svg += `<path d="M${CX},${CY} L${p0.x.toFixed(2)},${p0.y.toFixed(2)} A${R},${R} 0 0,1 ${p1.x.toFixed(2)},${p1.y.toFixed(2)} Z" fill="${fill}" stroke="rgba(0,0,0,.3)" stroke-width="1"/>`;
+  });
+  PRIZES.forEach((p,i)=>{
+    const center = i*SEG + SEG/2;
+    const textColor = p.premium ? '#241a05' : 'var(--text)';
+    svg += `<g transform="rotate(${center} ${CX} ${CY})">`;
+    if(p.premium) svg += `<text x="${CX}" y="${CY-LABEL_R+5}" text-anchor="middle" font-family="Fraunces" font-weight="700" font-size="11" fill="${textColor}">PREMIUM</text>`;
+    else if(p.amount>0) svg += `<text x="${CX}" y="${CY-LABEL_R+5}" text-anchor="middle" font-family="JetBrains Mono" font-weight="600" font-size="15" fill="${textColor}">${p.label}</text>`;
+    else svg += `<text x="${CX}" y="${CY-LABEL_R+5}" text-anchor="middle" font-family="JetBrains Mono" font-weight="600" font-size="12" fill="var(--dim)">ZONK</text>`;
+    svg += `</g>`;
+  });
+  svg += `</g>`;
+  return svg;
+}
+function pickPrizeIdx(){
+  const total = PRIZES.reduce((s,p)=>s+p.weight,0);
+  let r = Math.random()*total, acc=0;
+  for(let i=0;i<PRIZES.length;i++){ acc+=PRIZES[i].weight; if(r<=acc) return i; }
+  return 0;
+}
+
+function spinMissionsHtml(missions){
+  const defs = [ {id:'m1', th:15, reward:25}, {id:'m2', th:25, reward:50}, {id:'m3', th:50, reward:100} ];
+  return defs.map(d=>{
+    const mState = missions[d.id] || {count:0, awarded:0};
+    const progress = mState.count % d.th;
+    return `<div style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:10px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:.82rem;">
+        <span>Tonton iklan — ${d.th}x</span>
+        <span style="display:flex; align-items:center; gap:4px; color:var(--brass); font-weight:600;">${ic.gem} ${d.reward}</span>
+      </div>
+      <div style="height:7px; border-radius:99px; background:var(--bg); overflow:hidden; margin-bottom:8px;">
+        <div style="height:100%; width:${(progress/d.th*100)}%; background:var(--forest);"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:.72rem; color:var(--dim);">${progress}/${d.th}</span>
+        <button class="btn-ghost" style="padding:6px 12px; font-size:.75rem;" onclick="window.watchSpinAd('${d.id}',${d.th},${d.reward},this)">Tonton Iklan</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function renderSpin(){
+  const area = document.getElementById('spinArea');
+  if(!currentUser){
+    area.innerHTML = `<div class="card" style="text-align:center; padding:30px;"><p style="color:var(--dim);">Login dulu buat main Roda Hadiah dan simpan progres diamond kamu.</p><button class="btn-primary" onclick="window.doLogin()">Login dengan Google</button></div>`;
+    return;
+  }
+  const userRef = doc(db,'users',currentUser.uid);
+  const snap = await getDoc(userRef);
+  const data = snap.exists() ? snap.data() : {};
+  const balance = data.diamondBalance ?? 100;
+  const missions = data.missions || {};
+  spinRotation = data.spinRotation || 0;
+
+  area.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <div style="display:inline-flex; align-items:center; gap:7px; background:var(--bg); border:1px solid var(--line); padding:7px 14px; border-radius:99px; font-weight:600; margin-bottom:14px;">${ic.gem} <span id="spinBalance">${balance}</span></div>
+      <div style="position:relative; width:260px; height:260px; margin:0 auto;">
+        <div style="position:absolute; left:50%; top:-6px; transform:translateX(-50%); width:0; height:0; border-left:9px solid transparent; border-right:9px solid transparent; border-top:16px solid var(--brass); z-index:3;"></div>
+        <svg viewBox="0 0 300 300" width="260" height="260" id="wheelSvg" style="border-radius:50%; box-shadow:0 0 0 4px var(--line);">${buildWheelSvg()}</svg>
+      </div>
+      <button class="btn-primary" id="spinBtn" style="margin-top:16px;" onclick="window.doSpin()">Putar</button>
+      <p style="font-size:.75rem; color:var(--dim); margin-top:6px; display:flex; justify-content:center; align-items:center; gap:5px;">${ic.gem} ${SPIN_COST} per putaran</p>
+    </div>
+    <div class="section-title">Misi Harian — Kumpulin Diamond</div>
+    <div id="missionsArea">${spinMissionsHtml(missions)}</div>
+    <div class="notice">Progres diamond & misi tersimpan ke akun Google kamu. Kalau menang Premium, klaim otomatis dikirim ke admin buat diverifikasi.</div>
+  `;
+}
+
+window.watchSpinAd = async (id, threshold, reward, btn) => {
+  btn.disabled = true; btn.textContent = 'Memutar...';
+  const userRef = doc(db,'users',currentUser.uid);
+  const snap = await getDoc(userRef);
+  const data = snap.exists() ? snap.data() : {};
+  const missions = data.missions || {};
+  const mState = missions[id] || {count:0, awarded:0};
+  setTimeout(async () => {
+    mState.count += 1;
+    const timesShouldHave = Math.floor(mState.count/threshold);
+    let balance = data.diamondBalance ?? 100;
+    if(timesShouldHave > mState.awarded){
+      balance += (timesShouldHave - mState.awarded)*reward;
+      mState.awarded = timesShouldHave;
+    }
+    missions[id] = mState;
+    await setDoc(userRef, { missions, diamondBalance: balance }, { merge:true });
+    renderSpin();
+  }, 900);
+};
+
+window.doSpin = async () => {
+  if(spinning) return;
+  const userRef = doc(db,'users',currentUser.uid);
+  const snap = await getDoc(userRef);
+  const data = snap.exists() ? snap.data() : {};
+  let balance = data.diamondBalance ?? 100;
+  if(balance < SPIN_COST){ alert('Diamond kamu kurang, tonton iklan misi dulu!'); return; }
+  spinning = true;
+  balance -= SPIN_COST;
+  document.getElementById('spinBalance').textContent = balance;
+  document.getElementById('spinBtn').disabled = true;
+  await setDoc(userRef, { diamondBalance: balance }, { merge:true });
+
+  const idx = pickPrizeIdx();
+  const center = idx*SEG + SEG/2;
+  const jitter = (Math.random()*SEG*0.6) - SEG*0.3;
+  const spins = 6;
+  const targetMod = ((360 - center + jitter) % 360 + 360) % 360;
+  const current = ((spinRotation % 360) + 360) % 360;
+  const delta = spins*360 + ((targetMod - current) + 360) % 360;
+  spinRotation += delta;
+  document.getElementById('spinGroup').style.transform = `rotate(${spinRotation}deg)`;
+
+  setTimeout(async () => {
+    const p = PRIZES[idx];
+    if(p.premium){
+      if(premiumEmails.has(currentUser.email)){
+        alert('Kamu sudah premium! Hadiah premium ini otomatis hangus.');
+      } else {
+        await setDoc(doc(db,'premiumClaims',currentUser.uid), {
+          uid: currentUser.uid, email: currentUser.email, displayName: currentUser.displayName, wonAt: Date.now(), status:'pending'
+        });
+        alert('Selamat, kamu menang PREMIUM! Klaim otomatis udah dikirim ke admin, tunggu diverifikasi ya.');
+      }
+    } else if(p.amount>0){
+      balance += p.amount;
+      await setDoc(userRef, { diamondBalance: balance }, { merge:true });
+      alert('Selamat, kamu dapat '+p.amount+' diamond!');
+    } else {
+      alert('Yah, zonk. Coba lagi lain kali!');
+    }
+    await setDoc(userRef, { spinRotation }, { merge:true });
+    spinning = false;
+    renderSpin();
+  }, 4300);
+};
+</script>
+</body>
+</html>
