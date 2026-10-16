@@ -7,6 +7,8 @@
 // Tes manual tanpa menghapus (bisa dari HP):  /api/cleanup-premium?dry=1&key=<CRON_SECRET>
 // (setelah selesai tes, ganti CRON_SECRET di Vercel karena sempat tampil di URL)
 
+const GRACE_MS = 3 * 24 * 60 * 60 * 1000; // harus sama dengan di grupai.html & admin.html
+
 // Inisialisasi dilakukan di dalam handler (bukan di atas) supaya kalau gagal,
 // pesan errornya tampil jelas di respons, bukan "FUNCTION_INVOCATION_FAILED".
 let db;
@@ -150,4 +152,3 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: e.message });
   }
 };
-
