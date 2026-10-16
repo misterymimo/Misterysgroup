@@ -4,7 +4,8 @@
 // Env yang dibutuhkan (Vercel > Settings > Environment Variables):
 //   FIREBASE_SERVICE_ACCOUNT = isi JSON service account Firebase (satu baris)
 //   CRON_SECRET              = string acak panjang (Vercel otomatis mengirimnya saat cron jalan)
-// Tes manual tanpa menghapus:  GET /api/cleanup-premium?dry=1  dengan header Authorization: Bearer <CRON_SECRET>
+// Tes manual tanpa menghapus (bisa dari HP):  /api/cleanup-premium?dry=1&key=<CRON_SECRET>
+// (setelah selesai tes, ganti CRON_SECRET di Vercel karena sempat tampil di URL)
 
 const admin = require('firebase-admin');
 
@@ -49,7 +50,8 @@ async function rankByRating(groups) {
 
 module.exports = async (req, res) => {
   const secret = process.env.CRON_SECRET;
-  if (!secret || req.headers.authorization !== `Bearer ${secret}`) {
+  const given = (req.headers.authorization || '').replace(/^Bearer /, '') || (req.query && req.query.key);
+  if (!secret || given !== secret) {
     return res.status(401).json({ error: 'unauthorized' });
   }
   const dry = req.query && (req.query.dry === '1' || req.query.dry === 'true');
