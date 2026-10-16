@@ -7,16 +7,23 @@
 // Tes manual tanpa menghapus (bisa dari HP):  /api/cleanup-premium?dry=1&key=<CRON_SECRET>
 // (setelah selesai tes, ganti CRON_SECRET di Vercel karena sempat tampil di URL)
 
-const admin = require('firebase-admin');
-
-const GRACE_MS = 3 * 24 * 60 * 60 * 1000; // harus sama dengan di grupai.html & admin.html
-
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)),
-  });
+// Inisialisasi dilakukan di dalam handler (bukan di atas) supaya kalau gagal,
+// pesan errornya tampil jelas di respons, bukan "FUNCTION_INVOCATION_FAILED".
+let db;
+function getDb() {
+  const admin = require('firebase-admin');
+  if (!admin.apps.length) {
+    let raw = (process.env.FIREBASE_SERVICE_ACCOUNT || '').trim();
+    if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT kosong atau tidak terbaca (cek Environment Variables lalu redeploy)');
+    if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) raw = raw.slice(1, -1);
+    let sa;
+    try { sa = JSON.parse(raw); }
+    catch (e) { throw new Error('FIREBASE_SERVICE_ACCOUNT bukan JSON yang valid (pastikan paste utuh dari { sampai })'); }
+    if (sa.private_key) sa.private_key = sa.private_key.replace(/\\n/g, '\n');
+    admin.initializeApp({ credential: admin.credential.cert(sa) });
+  }
+  return admin.firestore();
 }
-const db = admin.firestore();
 
 function safeId(k) { return k.replace(/[^a-zA-Z0-9:._-]/g, '_').slice(0, 200); }
 // Sama persis dengan linkKeyOf di grupai.html
@@ -57,6 +64,7 @@ module.exports = async (req, res) => {
   const dry = req.query && (req.query.dry === '1' || req.query.dry === 'true');
 
   try {
+    db = getDb();
     const now = Date.now();
     const [gSnap, pSnap] = await Promise.all([
       db.collection('groups').get(),
@@ -142,3 +150,4 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: e.message });
   }
 };
+
